@@ -1,8 +1,6 @@
 "use client"
 
 import { MultiUpdateDialog } from "@/components/multi-update-dialog"
-import { MultiUpdateDialog } from "@/components/multi-update-dialog"
-
 
 import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
@@ -15,7 +13,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
     SidebarInset,
     SidebarProvider,
@@ -320,6 +317,15 @@ export default function FleetDashboard() {
                                         toast.success(`Bulk operation complete!`)
                                         fetchData()
                                     }}
+                                    renderMultiUpdateDialog={(rows, onActionComplete) => (
+                                        <MultiUpdateDialog
+                                            rows={rows}
+                                            label="Fleet Items"
+                                            endpoint="fleet"
+                                            statuses={['In Service', 'At Hub', 'Loading']}
+                                            onSuccess={() => { fetchData(); onActionComplete(); }}
+                                        />
+                                    )}
                                 />
                             ) : (
                                 <FleetMapView data={allData} />
