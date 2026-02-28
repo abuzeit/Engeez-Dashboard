@@ -84,6 +84,7 @@ async function main() {
         })
     }
 
+    await prisma.stat.deleteMany({})
     for (const stat of data.stats) {
         await prisma.stat.create({
             data: {
@@ -161,6 +162,7 @@ async function main() {
         }
     ]
 
+    await prisma.pricingRule.deleteMany({})
     for (const rule of pricingRules) {
         await prisma.pricingRule.create({
             data: rule,

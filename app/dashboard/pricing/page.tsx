@@ -1,5 +1,6 @@
 "use client"
 
+import { MultiUpdateDialog } from "@/components/multi-update-dialog"
 import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import {
@@ -11,6 +12,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
     SidebarInset,
     SidebarProvider,
@@ -220,6 +222,22 @@ export default function PricingPage() {
                                     setSelectedPricing(row as PricingRule)
                                     setUpdateDialogOpen(true)
                                 }}
+                                onDelete={async (rows) => {
+                                    const ids = rows.map((r: any) => r.id)
+                                    await fetch('/api/pricing/bulk', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids }) })
+                                    toast.success(`Operation complete`)
+                                    fetchData()
+                                }}
+                            
+                                renderMultiUpdateDialog={(rows, onActionComplete) => (
+                                    <MultiUpdateDialog
+                                        rows={rows}
+                                        label="Pricing Rules"
+                                        endpoint="pricing"
+                                        statuses={['Active', 'Inactive']}
+                                        onSuccess={() => { fetchData(); onActionComplete(); }}
+                                    />
+                                )}
                             />
                         </CardContent>
                     </Card>

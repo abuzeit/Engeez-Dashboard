@@ -1,5 +1,9 @@
 "use client"
 
+import { MultiUpdateDialog } from "@/components/multi-update-dialog"
+import { MultiUpdateDialog } from "@/components/multi-update-dialog"
+
+
 import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import {
@@ -11,6 +15,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
     SidebarInset,
     SidebarProvider,
@@ -308,6 +313,12 @@ export default function FleetDashboard() {
                                     onUpdate={(row) => {
                                         setSelectedFleet(row as FleetVehicle)
                                         setUpdateDialogOpen(true)
+                                    }}
+                                    onDelete={async (rows) => {
+                                        const ids = rows.map((r: any) => r.vehicleId || r.id)
+                                        await fetch('/api/fleet/bulk', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids }) })
+                                        toast.success(`Bulk operation complete!`)
+                                        fetchData()
                                     }}
                                 />
                             ) : (

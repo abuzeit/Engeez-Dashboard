@@ -84,7 +84,7 @@ interface DataTableProps<TData, TValue> {
     loading?: boolean
     onUpdate?: (row: TData) => void
     onDelete?: (rows: TData[]) => void
-    renderMultiUpdateDialog?: (rows: TData[]) => React.ReactNode
+    renderMultiUpdateDialog?: (rows: TData[], onActionComplete: () => void) => React.ReactNode
 }
 
 // Draggable Header Component
@@ -182,6 +182,15 @@ export function DataTable<TData, TValue>({
 
     const [activeId, setActiveId] = React.useState<string | null>(null)
     const [isMounted, setIsMounted] = React.useState(false)
+    const [multiUpdateOpen, setMultiUpdateOpen] = React.useState(false)
+    const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(false)
+
+    // Helper to reset selection and close dialogs
+    const handleActionComplete = () => {
+        setRowSelection({})
+        setMultiUpdateOpen(false)
+        setDeleteAlertOpen(false)
+    }
 
     React.useEffect(() => {
         setIsMounted(true)
@@ -337,26 +346,30 @@ export function DataTable<TData, TValue>({
                                     <span className="hidden sm:inline-block">Update</span>
                                 </Button>
                             ) : renderMultiUpdateDialog ? (
-                                <Dialog>
-                                    <DialogTrigger render={<Button variant="outline" size="sm" className="h-9 gap-2 whitespace-nowrap" />}>
-                                        <Edit2 className="h-4 w-4" />
-                                        <span className="hidden sm:inline-block">
-                                            {isAllSelected ? "Update All" : "Multi Update"}
-                                        </span>
-                                    </DialogTrigger>
+                                <Dialog open={multiUpdateOpen} onOpenChange={setMultiUpdateOpen}>
+                                    <DialogTrigger render={
+                                        <Button variant="outline" size="sm" className="h-9 gap-2 whitespace-nowrap">
+                                            <Edit2 className="h-4 w-4" />
+                                            <span className="hidden sm:inline-block">
+                                                {isAllSelected ? "Update All" : "Multi Update"}
+                                            </span>
+                                        </Button>
+                                    } />
                                     <DialogContent>
-                                        {renderMultiUpdateDialog(selectedRows)}
+                                        {renderMultiUpdateDialog(selectedRows, handleActionComplete)}
                                     </DialogContent>
                                 </Dialog>
                             ) : null}
 
-                            <AlertDialog>
-                                <AlertDialogTrigger render={<Button variant="destructive" size="sm" className="h-9 gap-2 whitespace-nowrap" />}>
-                                    <Trash2 className="h-4 w-4" />
-                                    <span className="hidden sm:inline-block">
-                                        {selectedCount === 1 ? "Delete" : isAllSelected ? "Delete All" : "Multi Delete"}
-                                    </span>
-                                </AlertDialogTrigger>
+                            <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+                                <AlertDialogTrigger render={
+                                    <Button variant="destructive" size="sm" className="h-9 gap-2 whitespace-nowrap">
+                                        <Trash2 className="h-4 w-4" />
+                                        <span className="hidden sm:inline-block">
+                                            {selectedCount === 1 ? "Delete" : isAllSelected ? "Delete All" : "Multi Delete"}
+                                        </span>
+                                    </Button>
+                                } />
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -366,7 +379,16 @@ export function DataTable<TData, TValue>({
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => onDelete?.(selectedRows)}>Delete</AlertDialogAction>
+                                        <AlertDialogAction
+                                            onClick={async (e) => {
+                                                e.preventDefault()
+                                                await onDelete?.(selectedRows)
+                                                handleActionComplete()
+                                            }}
+                                            className={buttonVariants({ variant: "destructive" })}
+                                        >
+                                            Delete
+                                        </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>

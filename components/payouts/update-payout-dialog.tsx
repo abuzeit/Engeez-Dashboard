@@ -79,8 +79,13 @@ export function UpdatePayoutDialog({ payout, open, onOpenChange, onSuccess, type
     async function onSubmit(data: PayoutFormValues) {
         setIsSubmitting(true)
         try {
-            // Mock API delay
-            await new Promise(resolve => setTimeout(resolve, 800))
+            const endpoint = typeLabel.toLowerCase() === 'top up' ? 'topups' : 'payouts'
+            const response = await fetch(`/api/${endpoint}/${data.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            })
+            if (!response.ok) throw new Error("Failed to update payout")
 
             toast.success(`${typeLabel} updated successfully`, {
                 description: `${typeLabel} ${data.id} has been updated in the system.`,

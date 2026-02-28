@@ -1,5 +1,6 @@
 "use client"
 
+import { MultiUpdateDialog } from "@/components/multi-update-dialog"
 import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import {
@@ -11,6 +12,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
     SidebarInset,
     SidebarProvider,
@@ -236,6 +238,22 @@ export default function DriversPage() {
                                     setDriverToUpdate(row as Driver)
                                     setUpdateDialogOpen(true)
                                 }}
+                                onDelete={async (rows) => {
+                                    const ids = rows.map((r: any) => r.id)
+                                    await fetch('/api/drivers/bulk', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids }) })
+                                    toast.success(`Deleted ${ids.length} drivers!`)
+                                    fetchData()
+                                }}
+                            
+                                renderMultiUpdateDialog={(rows, onActionComplete) => (
+                                    <MultiUpdateDialog
+                                        rows={rows}
+                                        label="Drivers"
+                                        endpoint="drivers"
+                                        statuses={['Active', 'Inactive', 'Offline']}
+                                        onSuccess={() => { fetchData(); onActionComplete(); }}
+                                    />
+                                )}
                             />
                         </CardContent>
                     </Card>

@@ -8,22 +8,30 @@ export async function PATCH(
     try {
         const { id } = await context.params
         const body = await req.json()
-        const { customer, destination, status, priority, serviceType } = body
+        const { type, model, capacity, fuelLevel, lastMaintenance, status, vin, year, mileage, engineStatus, tirePressure, currentDriver, currentLocation } = body
 
-        const updated = await prisma.order.update({
-            where: { orderId: id },
+        const updated = await prisma.vehicle.update({
+            where: { vehicleId: id },
             data: {
-                customer,
-                destination,
+                type,
+                model,
+                capacity,
+                fuelLevel,
+                lastMaintenance,
                 status,
-                priority,
-                serviceType
+                vin,
+                year,
+                mileage,
+                engineStatus,
+                tirePressure,
+                currentDriver,
+                currentLocation
             },
         })
 
         return NextResponse.json(updated)
     } catch (error) {
-        console.error("Failed to update orders:", error)
+        console.error("Failed to update vehicles:", error)
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
     }
 }
@@ -35,13 +43,13 @@ export async function DELETE(
     try {
         const { id } = await context.params
 
-        const deleted = await prisma.order.delete({
-            where: { orderId: id },
+        const deleted = await prisma.vehicle.delete({
+            where: { vehicleId: id },
         })
 
         return NextResponse.json(deleted)
     } catch (error) {
-        console.error("Failed to delete orders:", error)
+        console.error("Failed to delete vehicles:", error)
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
     }
 }

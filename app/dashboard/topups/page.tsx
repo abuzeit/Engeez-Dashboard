@@ -1,5 +1,8 @@
 "use client"
 
+import { MultiUpdateDialog } from "@/components/multi-update-dialog"
+
+
 import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import {
@@ -340,33 +343,20 @@ export default function TopUpsPage() {
                                     setSelectedPayout(row as Payout)
                                     setUpdateDialogOpen(true)
                                 }}
-                                onDelete={(rows) => toast(`Deleted ${rows.length} records!`)}
-                                renderMultiUpdateDialog={(rows) => (
-                                    <>
-                                        <DialogHeader>
-                                            <DialogTitle>Update {rows.length} Top Ups</DialogTitle>
-                                            <DialogDescription>
-                                                You are changing the status for {rows.length} selected requests.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <div className="grid gap-4 py-4">
-                                            <div className="flex flex-col gap-2">
-                                                <span className="text-sm font-medium">New Status</span>
-                                                <Select>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a status" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="Approved">Approved</SelectItem>
-                                                        <SelectItem value="Processing">Processing</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <Button onClick={() => toast("Status updated successfully!")}>Save changes</Button>
-                                        </DialogFooter>
-                                    </>
+                                onDelete={async (rows) => {
+                                    const ids = rows.map((r: any) => r.id)
+                                    await fetch('/api/topups/bulk', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids }) })
+                                    toast.success(`Deleted ${ids.length} records!`)
+                                    fetchData()
+                                }}
+                                renderMultiUpdateDialog={(rows, onActionComplete) => (
+                                    <MultiUpdateDialog
+                                        rows={rows}
+                                        label="Top Ups"
+                                        endpoint="topups"
+                                        statuses={['Approved', 'Pending', 'Processing', 'Rejected']}
+                                        onSuccess={() => { fetchData(); onActionComplete(); }}
+                                    />
                                 )}
                             />
                         </CardContent>
