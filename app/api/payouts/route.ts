@@ -8,14 +8,16 @@ export async function GET(request: Request) {
     const search = searchParams.get("search") || ""
 
     try {
-        const where = search
-            ? {
-                OR: [
-                    { driver: { contains: search } },
-                    { payoutId: { contains: search } },
-                ],
-            }
-            : {}
+        const where: any = { payoutType: "Withdrawal" }
+        if (search) {
+            where.OR = [
+                { driver: { contains: search } },
+                { payoutId: { contains: search } },
+                { bank: { contains: search } },
+                { amount: { contains: search } },
+                { status: { contains: search } },
+            ]
+        }
 
         const [total, items] = await Promise.all([
             prisma.payout.count({ where }),

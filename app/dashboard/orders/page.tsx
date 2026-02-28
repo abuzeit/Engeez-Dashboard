@@ -37,6 +37,20 @@ import {
 import { OrderDetailsSheet } from "@/components/orders/order-details-sheet"
 import { UpdateOrderDialog } from "@/components/orders/update-order-dialog"
 import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+import {
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 type Order = {
@@ -243,6 +257,7 @@ export default function OrdersPage() {
                         </CardHeader>
                         <CardContent className="pt-0">
                             <DataTable
+                                tableId="orders_table"
                                 columns={columns}
                                 data={data}
                                 pageCount={totalPages}
@@ -252,6 +267,39 @@ export default function OrdersPage() {
                                 onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
                                 onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
                                 onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
+                                onUpdate={(row) => {
+                                    setSelectedOrder(row)
+                                    setUpdateDialogOpen(true)
+                                }}
+                                onDelete={(rows) => toast.success(`Deleted ${rows.length} records!`)}
+                                renderMultiUpdateDialog={(rows) => (
+                                    <>
+                                        <DialogHeader>
+                                            <DialogTitle>Update {rows.length} Orders</DialogTitle>
+                                            <DialogDescription>
+                                                You are changing the status for {rows.length} selected orders.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <div className="flex flex-col gap-2">
+                                                <span className="text-sm font-medium">New Status</span>
+                                                <Select>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select a status" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="PENDING">PENDING</SelectItem>
+                                                        <SelectItem value="PROCESSING">PROCESSING</SelectItem>
+                                                        <SelectItem value="DELIVERED">DELIVERED</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button onClick={() => toast.success("Orders updated successfully!")}>Save changes</Button>
+                                        </DialogFooter>
+                                    </>
+                                )}
                             />
                         </CardContent>
                     </Card>

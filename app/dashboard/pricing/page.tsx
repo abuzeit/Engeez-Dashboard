@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button"
 import { Plus, ArrowUpDown, MoreHorizontal, Settings2, Calculator } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { DataTable } from "@/components/data-table"
+import { Toaster, toast } from "sonner"
+import { UpdatePricingDialog } from "@/components/pricing/update-pricing-dialog"
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
@@ -49,6 +51,8 @@ type PricingRule = {
 export default function PricingPage() {
     const [data, setData] = React.useState<PricingRule[]>([])
     const [loading, setLoading] = React.useState(true)
+    const [selectedPricing, setSelectedPricing] = React.useState<PricingRule | null>(null)
+    const [updateDialogOpen, setUpdateDialogOpen] = React.useState(false)
     const [totalPages, setTotalPages] = React.useState(0)
     const [params, setParams] = React.useState({
         page: 1,
@@ -202,6 +206,7 @@ export default function PricingPage() {
                         </CardHeader>
                         <CardContent className="pt-0">
                             <DataTable
+                                tableId="pricing_table"
                                 columns={columns}
                                 data={data}
                                 pageCount={totalPages}
@@ -211,9 +216,22 @@ export default function PricingPage() {
                                 onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
                                 onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
                                 onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
+                                onUpdate={(row) => {
+                                    setSelectedPricing(row as PricingRule)
+                                    setUpdateDialogOpen(true)
+                                }}
                             />
                         </CardContent>
                     </Card>
+
+                    <UpdatePricingDialog
+                        pricing={selectedPricing}
+                        open={updateDialogOpen}
+                        onOpenChange={setUpdateDialogOpen}
+                        onSuccess={fetchData}
+                    />
+
+                    <Toaster position="bottom-right" closeButton richColors />
                 </main>
             </SidebarInset>
         </SidebarProvider>

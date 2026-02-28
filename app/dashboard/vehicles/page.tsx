@@ -23,6 +23,8 @@ import { Plus, ArrowUpDown, MoreHorizontal, Truck, Eye } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import { DataTable } from "@/components/data-table"
+import { Toaster, toast } from "sonner"
+import { UpdateVehicleDialog } from "@/components/vehicles/update-vehicle-dialog"
 import { ColumnDef } from "@tanstack/react-table"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -49,6 +51,8 @@ type Vehicle = {
 export default function VehiclesPage() {
     const [data, setData] = React.useState<Vehicle[]>([])
     const [loading, setLoading] = React.useState(true)
+    const [selectedVehicle, setSelectedVehicle] = React.useState<Vehicle | null>(null)
+    const [updateDialogOpen, setUpdateDialogOpen] = React.useState(false)
     const [totalPages, setTotalPages] = React.useState(0)
     const [params, setParams] = React.useState({
         page: 1,
@@ -226,6 +230,7 @@ export default function VehiclesPage() {
                         </CardHeader>
                         <CardContent className="pt-0">
                             <DataTable
+                                tableId="vehicles_table"
                                 columns={columns}
                                 data={data}
                                 pageCount={totalPages}
@@ -235,9 +240,22 @@ export default function VehiclesPage() {
                                 onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
                                 onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
                                 onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
+                                onUpdate={(row) => {
+                                    setSelectedVehicle(row as Vehicle)
+                                    setUpdateDialogOpen(true)
+                                }}
                             />
                         </CardContent>
                     </Card>
+
+                    <UpdateVehicleDialog
+                        vehicle={selectedVehicle}
+                        open={updateDialogOpen}
+                        onOpenChange={setUpdateDialogOpen}
+                        onSuccess={fetchData}
+                    />
+
+                    <Toaster position="bottom-right" closeButton richColors />
                 </main>
             </SidebarInset>
         </SidebarProvider>

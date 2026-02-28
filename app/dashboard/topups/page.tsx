@@ -21,9 +21,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowUpDown, MoreHorizontal, DollarSign, Wallet, Clock, CheckCircle2, Timer, TrendingUp } from "lucide-react"
 import { DataTable } from "@/components/data-table"
-import { UpdatePayoutDialog } from "@/components/payouts/update-payout-dialog"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Toaster, toast } from "sonner"
+import { UpdatePayoutDialog } from "@/components/payouts/update-payout-dialog"
 import { ColumnDef } from "@tanstack/react-table"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -64,7 +64,7 @@ type Payout = {
     walletAvailableBalance: string
 }
 
-export default function PayoutsPage() {
+export default function TopUpsPage() {
     const [data, setData] = React.useState<Payout[]>([])
     const [loading, setLoading] = React.useState(true)
     const [selectedPayout, setSelectedPayout] = React.useState<Payout | null>(null)
@@ -88,7 +88,7 @@ export default function PayoutsPage() {
             search: params.search
         }).toString()
 
-        const res = await fetch(`/api/payouts?${query}`)
+        const res = await fetch(`/api/topups?${query}`)
         const json = await res.json()
         setData(json.data)
         setTotalPages(json.totalPages)
@@ -251,7 +251,7 @@ export default function PayoutsPage() {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="hidden md:block" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage>Payouts</BreadcrumbPage>
+                                <BreadcrumbPage>Top Ups</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -261,9 +261,9 @@ export default function PayoutsPage() {
                 <main className="flex flex-1 flex-col gap-6 p-6">
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
-                            <h1 className="text-2xl font-bold tracking-tight">Payout Requests</h1>
+                            <h1 className="text-2xl font-bold tracking-tight">Top Up Requests</h1>
                             <p className="text-sm text-muted-foreground text-balance max-w-lg">
-                                Review and manage driver earnings withdrawal requests. Ensure bank verification before approval.
+                                Review and manage driver wallet top-up requests. Verify associated funds before approval.
                             </p>
                         </div>
                         <div className="flex gap-2">
@@ -326,7 +326,7 @@ export default function PayoutsPage() {
                         </CardHeader>
                         <CardContent className="pt-0">
                             <DataTable
-                                tableId="payouts_table"
+                                tableId="topups_table"
                                 columns={columns}
                                 data={data}
                                 pageCount={totalPages}
@@ -344,7 +344,7 @@ export default function PayoutsPage() {
                                 renderMultiUpdateDialog={(rows) => (
                                     <>
                                         <DialogHeader>
-                                            <DialogTitle>Update {rows.length} Payouts</DialogTitle>
+                                            <DialogTitle>Update {rows.length} Top Ups</DialogTitle>
                                             <DialogDescription>
                                                 You are changing the status for {rows.length} selected requests.
                                             </DialogDescription>
@@ -377,7 +377,7 @@ export default function PayoutsPage() {
                         open={updateDialogOpen}
                         onOpenChange={setUpdateDialogOpen}
                         onSuccess={fetchData}
-                        typeLabel="Payout Request"
+                        typeLabel="Top Up"
                     />
 
                     <Toaster position="bottom-right" closeButton richColors />

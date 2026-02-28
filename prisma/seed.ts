@@ -175,16 +175,22 @@ async function main() {
             status: "Pending",
             requestDate: "2024-02-20",
             bank: "Chase Bank",
-            accountEnd: "...4589"
+            accountEnd: "...4589",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$1,350.00",
+            walletAvailableBalance: "$1,250.00"
         },
         {
             payoutId: "PO-1002",
             driver: "Maria Garcia",
-            amount: "$850.50",
-            status: "Approved",
+            amount: "$200.00",
+            status: "Pending",
             requestDate: "2024-02-19",
             bank: "Bank of America",
-            accountEnd: "...1234"
+            accountEnd: "...1234",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$150.00",
+            walletAvailableBalance: "$0.00"
         },
         {
             payoutId: "PO-1003",
@@ -193,7 +199,10 @@ async function main() {
             status: "Processing",
             requestDate: "2024-02-18",
             bank: "Wells Fargo",
-            accountEnd: "...7890"
+            accountEnd: "...7890",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$2,100.00",
+            walletAvailableBalance: "$2,100.00"
         },
         {
             payoutId: "PO-1004",
@@ -202,23 +211,161 @@ async function main() {
             status: "Completed",
             requestDate: "2024-02-17",
             bank: "PNC Bank",
-            accountEnd: "...3456"
+            accountEnd: "...3456",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$1,600.00",
+            walletAvailableBalance: "$1,500.00"
         },
         {
             payoutId: "PO-1005",
             driver: "Robert Brown",
-            amount: "$920.00",
+            amount: "$50.00",
             status: "Cancelled",
             requestDate: "2024-02-15",
             bank: "Capital One",
-            accountEnd: "...9012"
+            accountEnd: "...9012",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$50.00",
+            walletAvailableBalance: "$0.00"
+        },
+        {
+            payoutId: "PO-1006",
+            driver: "Emily Chen",
+            amount: "$350.00",
+            status: "Pending",
+            requestDate: "2024-02-21",
+            bank: "Citi Bank",
+            accountEnd: "...3312",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$300.00",
+            walletAvailableBalance: "$0.00"
+        },
+        {
+            payoutId: "PO-1007",
+            driver: "Michael Davis",
+            amount: "$800.00",
+            status: "Completed",
+            requestDate: "2024-02-19",
+            bank: "Chase Bank",
+            accountEnd: "...6634",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$800.00",
+            walletAvailableBalance: "$800.00"
+        },
+        {
+            payoutId: "PO-1008",
+            driver: "Linda Evans",
+            amount: "$400.00",
+            status: "Processing",
+            requestDate: "2024-02-20",
+            bank: "US Bank",
+            accountEnd: "...0021",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$100.00",
+            walletAvailableBalance: "$0.00"
+        },
+        {
+            payoutId: "PO-1009",
+            driver: "David Fox",
+            amount: "$3,200.00",
+            status: "Completed",
+            requestDate: "2024-02-14",
+            bank: "HSBC",
+            accountEnd: "...4451",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$3,500.00",
+            walletAvailableBalance: "$3,200.00"
+        },
+        {
+            payoutId: "PO-1010",
+            driver: "Anna Green",
+            amount: "$150.00",
+            status: "Pending",
+            requestDate: "2024-02-21",
+            bank: "Bank of America",
+            accountEnd: "...8871",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$150.00",
+            walletAvailableBalance: "$0.00"
+        },
+        {
+            payoutId: "PO-1011",
+            driver: "Carlos Silva",
+            amount: "$900.00",
+            status: "Processing",
+            requestDate: "2024-02-21",
+            bank: "Wells Fargo",
+            accountEnd: "...4512",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$1,200.00",
+            walletAvailableBalance: "$900.00"
+        },
+        {
+            payoutId: "PO-1012",
+            driver: "Lisa Wong",
+            amount: "$75.00",
+            status: "Cancelled",
+            requestDate: "2024-02-16",
+            bank: "Discover",
+            accountEnd: "...9081",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$75.00",
+            walletAvailableBalance: "$0.00"
+        },
+        {
+            payoutId: "PO-1013",
+            driver: "Oliver Twist",
+            amount: "$3,000.00",
+            status: "Completed",
+            requestDate: "2024-02-15",
+            bank: "Barclays",
+            accountEnd: "...1239",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$4,000.00",
+            walletAvailableBalance: "$3,000.00"
+        },
+        {
+            payoutId: "PO-1014",
+            driver: "Sophie Turner",
+            amount: "$120.00",
+            status: "Completed",
+            requestDate: "2024-02-14",
+            bank: "Lloyds",
+            accountEnd: "...8890",
+            payoutType: "Top Up",
+            walletTotalBalance: "$50.00",
+            walletAvailableBalance: "$50.00"
+        },
+        {
+            payoutId: "PO-1015",
+            driver: "Jake Peralta",
+            amount: "$1,850.00",
+            status: "Pending",
+            requestDate: "2024-02-22",
+            bank: "Chase Bank",
+            accountEnd: "...2811",
+            payoutType: "Withdrawal",
+            walletTotalBalance: "$1,850.00",
+            walletAvailableBalance: "$1,850.00"
+        },
+        {
+            payoutId: "PO-1016",
+            driver: "Amy Santiago",
+            amount: "$450.00",
+            status: "Pending",
+            requestDate: "2024-02-22",
+            bank: "Citi Bank",
+            accountEnd: "...5822",
+            payoutType: "Top Up",
+            walletTotalBalance: "-$450.00",
+            walletAvailableBalance: "$0.00"
         }
     ]
 
     for (const payout of payouts) {
         await prisma.payout.upsert({
             where: { payoutId: payout.payoutId },
-            update: {},
+            update: payout,
             create: payout,
         })
     }

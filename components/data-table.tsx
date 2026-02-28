@@ -14,7 +14,7 @@ import {
     useReactTable,
     ColumnOrderState,
 } from "@tanstack/react-table"
-import { ChevronLeft, ChevronRight, Settings2, GripVertical, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react"
+import { ChevronLeft, ChevronRight, Settings2, GripVertical, ArrowUp, ArrowDown, ArrowUpDown, Edit2, Trash2 } from "lucide-react"
 
 import {
     Table,
@@ -32,6 +32,22 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
 // Dnd Kit Imports
@@ -56,6 +72,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { restrictToHorizontalAxis } from "@dnd-kit/modifiers"
 
 interface DataTableProps<TData, TValue> {
+    tableId?: string
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     pageCount: number
@@ -65,6 +82,9 @@ interface DataTableProps<TData, TValue> {
     onSortingChange: (sort: string, direction: "asc" | "desc") => void
     onSearchChange: (value: string) => void
     loading?: boolean
+    onUpdate?: (row: TData) => void
+    onDelete?: (rows: TData[]) => void
+    renderMultiUpdateDialog?: (rows: TData[]) => React.ReactNode
 }
 
 // Draggable Header Component
@@ -139,6 +159,7 @@ function DraggableTableHeader({ header }: { header: any }) {
 }
 
 export function DataTable<TData, TValue>({
+    tableId,
     columns,
     data,
     pageCount,
@@ -148,20 +169,72 @@ export function DataTable<TData, TValue>({
     onSortingChange,
     onSearchChange,
     loading,
+    onUpdate,
+    onDelete,
+    renderMultiUpdateDialog,
 }: DataTableProps<TData, TValue>) {
+    const defaultColumnOrder = React.useMemo(() => columns.map((c) => (c.id || (c as any).accessorKey) as string).filter(Boolean), [columns])
+
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(() =>
-        columns.map((c) => (c.id || (c as any).accessorKey) as string).filter(Boolean)
-    )
+    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(defaultColumnOrder)
 
     const [activeId, setActiveId] = React.useState<string | null>(null)
     const [isMounted, setIsMounted] = React.useState(false)
 
     React.useEffect(() => {
         setIsMounted(true)
-    }, [])
+        if (tableId) {
+            const savedVis = localStorage.getItem(`dt_vis_${tableId}`)
+            if (savedVis) {
+                try {
+                    setColumnVisibility(JSON.parse(savedVis))
+                } catch (e) { }
+            }
+            const savedOrd = localStorage.getItem(`dt_ord_${tableId}`)
+            if (savedOrd) {
+                try {
+                    const parsed = JSON.parse(savedOrd)
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const allValid = parsed.every(id => defaultColumnOrder.includes(id))
+                        if (allValid) {
+                            // Ensure missing columns are appended as fallback
+                            const missing = defaultColumnOrder.filter(id => !parsed.includes(id))
+                            let newOrder = [...parsed, ...missing]
+
+                            // Enforce fixed positions to prevent select/actions columns from getting lost
+                            const fixedStart = ["select"]
+                            const fixedEnd = ["actions"]
+
+                            newOrder = newOrder.filter(id => !fixedStart.includes(id) && !fixedEnd.includes(id))
+
+                            fixedStart.forEach(id => {
+                                if (defaultColumnOrder.includes(id)) newOrder.unshift(id)
+                            })
+                            fixedEnd.forEach(id => {
+                                if (defaultColumnOrder.includes(id)) newOrder.push(id)
+                            })
+
+                            setColumnOrder(newOrder)
+                        }
+                    }
+                } catch (e) { }
+            }
+        }
+    }, [tableId, defaultColumnOrder])
+
+    React.useEffect(() => {
+        if (isMounted && tableId) {
+            localStorage.setItem(`dt_vis_${tableId}`, JSON.stringify(columnVisibility))
+        }
+    }, [columnVisibility, tableId, isMounted])
+
+    React.useEffect(() => {
+        if (isMounted && tableId) {
+            localStorage.setItem(`dt_ord_${tableId}`, JSON.stringify(columnOrder))
+        }
+    }, [columnOrder, tableId, isMounted])
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -241,18 +314,67 @@ export function DataTable<TData, TValue>({
         setActiveId(null)
     }
 
+    const selectedCount = Object.keys(rowSelection || {}).length
+    const isAllSelected = table.getIsAllPageRowsSelected()
+    const selectedRows = table.getSelectedRowModel().rows.map(r => r.original)
+
     return (
         <div className="w-full space-y-4">
             <div className="flex items-center justify-between gap-4">
-                <div className="relative max-w-sm flex-1">
-                    <Input
-                        placeholder="Search all columns..."
-                        onChange={(event) => onSearchChange(event.target.value)}
-                        className="w-full"
-                    />
+                <div className="flex items-center gap-2 flex-1 max-w-2xl">
+                    <div className="relative w-full max-w-sm">
+                        <Input
+                            placeholder="Search all columns..."
+                            onChange={(event) => onSearchChange(event.target.value)}
+                            className="w-full h-9"
+                        />
+                    </div>
+                    {selectedCount > 0 && (
+                        <div className="flex items-center gap-2 animate-in fade-in zoom-in duration-200">
+                            {selectedCount === 1 ? (
+                                <Button variant="outline" size="sm" className="h-9 gap-2 whitespace-nowrap" onClick={() => onUpdate?.(selectedRows[0])}>
+                                    <Edit2 className="h-4 w-4" />
+                                    <span className="hidden sm:inline-block">Update</span>
+                                </Button>
+                            ) : renderMultiUpdateDialog ? (
+                                <Dialog>
+                                    <DialogTrigger render={<Button variant="outline" size="sm" className="h-9 gap-2 whitespace-nowrap" />}>
+                                        <Edit2 className="h-4 w-4" />
+                                        <span className="hidden sm:inline-block">
+                                            {isAllSelected ? "Update All" : "Multi Update"}
+                                        </span>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        {renderMultiUpdateDialog(selectedRows)}
+                                    </DialogContent>
+                                </Dialog>
+                            ) : null}
+
+                            <AlertDialog>
+                                <AlertDialogTrigger render={<Button variant="destructive" size="sm" className="h-9 gap-2 whitespace-nowrap" />}>
+                                    <Trash2 className="h-4 w-4" />
+                                    <span className="hidden sm:inline-block">
+                                        {selectedCount === 1 ? "Delete" : isAllSelected ? "Delete All" : "Multi Delete"}
+                                    </span>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. You are about to permanently delete {selectedCount} selected {selectedCount === 1 ? 'record' : 'records'}.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => onDelete?.(selectedRows)}>Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                    )}
                 </div>
                 <DropdownMenu>
-                    <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "ml-auto flex h-8 gap-2")}>
+                    <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "ml-auto flex h-9 gap-2")}>
                         <Settings2 className="h-4 w-4" />
                         View
                     </DropdownMenuTrigger>

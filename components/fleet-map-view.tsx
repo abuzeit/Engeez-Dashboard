@@ -380,6 +380,9 @@ export function FleetMapView({ data }: FleetMapViewProps) {
             {/* Injected styles for popup padding reset */}
             <style dangerouslySetInnerHTML={{
                 __html: `
+               .fleet-popup {
+                   z-index: 50;
+               }
                .fleet-popup .maplibregl-popup-content {
                    padding: 0;
                    border-radius: 0.5rem;

@@ -21,6 +21,8 @@ import { Badge } from "@/components/ui/badge"
 import { TrendingUp, TrendingDown, Minus, MoreHorizontal, Eye, Map, Table } from "lucide-react"
 import Link from "next/link"
 import { DataTable } from "@/components/data-table"
+import { Toaster, toast } from "sonner"
+import { UpdateFleetDialog } from "@/components/fleet/update-fleet-dialog"
 import { FleetMapView } from "@/components/fleet-map-view"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ColumnDef } from "@tanstack/react-table"
@@ -53,6 +55,8 @@ export default function FleetDashboard() {
     const [data, setData] = React.useState<FleetVehicle[]>([])
     const [allData, setAllData] = React.useState<FleetVehicle[]>([]) // Used for the map
     const [loading, setLoading] = React.useState(true)
+    const [selectedFleet, setSelectedFleet] = React.useState<FleetVehicle | null>(null)
+    const [updateDialogOpen, setUpdateDialogOpen] = React.useState(false)
     const [totalPages, setTotalPages] = React.useState(0)
     const [params, setParams] = React.useState({
         page: 1,
@@ -291,6 +295,7 @@ export default function FleetDashboard() {
                         <CardContent className="pt-0 flex-1 relative mt-4">
                             {viewMode === "table" ? (
                                 <DataTable
+                                    tableId="fleet_table"
                                     columns={columns}
                                     data={data}
                                     pageCount={totalPages}
@@ -300,12 +305,25 @@ export default function FleetDashboard() {
                                     onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
                                     onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
                                     onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
+                                    onUpdate={(row) => {
+                                        setSelectedFleet(row as FleetVehicle)
+                                        setUpdateDialogOpen(true)
+                                    }}
                                 />
                             ) : (
                                 <FleetMapView data={allData} />
                             )}
                         </CardContent>
                     </Card>
+
+                    <UpdateFleetDialog
+                        fleet={selectedFleet}
+                        open={updateDialogOpen}
+                        onOpenChange={setUpdateDialogOpen}
+                        onSuccess={fetchData}
+                    />
+
+                    <Toaster position="bottom-right" closeButton richColors />
                 </main>
             </SidebarInset>
         </SidebarProvider>

@@ -21,6 +21,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Plus, ArrowUpDown, MoreHorizontal, User, Eye } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Toaster, toast } from "sonner"
+import { UpdateDriverDialog } from "@/components/drivers/update-driver-dialog"
 import { DataTable } from "@/components/data-table"
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -61,6 +63,8 @@ export default function DriversPage() {
     const [loading, setLoading] = React.useState(true)
     const [totalPages, setTotalPages] = React.useState(0)
     const [selectedDriver, setSelectedDriver] = React.useState<Driver | null>(null)
+    const [driverToUpdate, setDriverToUpdate] = React.useState<Driver | null>(null)
+    const [updateDialogOpen, setUpdateDialogOpen] = React.useState(false)
     const [params, setParams] = React.useState({
         page: 1,
         pageSize: 5,
@@ -218,6 +222,7 @@ export default function DriversPage() {
                         </CardHeader>
                         <CardContent className="pt-0">
                             <DataTable
+                                tableId="drivers_table"
                                 columns={columns}
                                 data={data}
                                 pageCount={totalPages}
@@ -227,6 +232,10 @@ export default function DriversPage() {
                                 onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
                                 onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
                                 onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
+                                onUpdate={(row) => {
+                                    setDriverToUpdate(row as Driver)
+                                    setUpdateDialogOpen(true)
+                                }}
                             />
                         </CardContent>
                     </Card>
@@ -316,6 +325,15 @@ export default function DriversPage() {
                             </div>
                         </SheetContent>
                     </Sheet>
+
+                    <UpdateDriverDialog
+                        driver={driverToUpdate}
+                        open={updateDialogOpen}
+                        onOpenChange={setUpdateDialogOpen}
+                        onSuccess={fetchData}
+                    />
+
+                    <Toaster position="bottom-right" closeButton richColors />
                 </main>
             </SidebarInset>
         </SidebarProvider>

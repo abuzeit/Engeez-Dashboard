@@ -79,16 +79,19 @@ model PricingRule {
 }
 
 model Payout {
-  id          String   @id @default(cuid())
-  payoutId    String   @unique
-  driver      String
-  amount      String
-  status      String
-  requestDate String
-  bank        String
-  accountEnd  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                     String   @id @default(cuid())
+  payoutId               String   @unique
+  driver                 String
+  amount                 String
+  status                 String
+  requestDate            String
+  bank                   String
+  accountEnd             String
+  payoutType             String   @default("Withdrawal") // Top Up or Withdrawal
+  walletTotalBalance     String   @default("0.00")
+  walletAvailableBalance String   @default("0.00")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 }
 
 model Stat {

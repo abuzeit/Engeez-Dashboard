@@ -11,6 +11,7 @@ import {
   Search,
   Wallet,
   Gavel,
+  ArrowUpCircle,
 } from "lucide-react"
 
 import {
@@ -73,6 +74,11 @@ const data = {
           title: "Payouts",
           url: "/dashboard/payouts",
           icon: Wallet,
+        },
+        {
+          title: "Top Ups",
+          url: "/dashboard/topups",
+          icon: ArrowUpCircle,
         },
         {
           title: "Pricing Rules",

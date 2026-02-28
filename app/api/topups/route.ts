@@ -1,42 +1,37 @@
 import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
 
-export async function GET(req: NextRequest) {
-    const searchParams = req.nextUrl.searchParams
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get("page") || "1")
     const pageSize = parseInt(searchParams.get("pageSize") || "5")
     const search = searchParams.get("search") || ""
-    const sortColumn = searchParams.get("sort") || "createdAt"
-    const sortDirection = (searchParams.get("direction") || "desc") as "asc" | "desc"
 
     try {
-        const where: any = {}
+        const where: any = { payoutType: "Top Up" }
         if (search) {
             where.OR = [
-                { orderId: { contains: search } },
-                { customer: { contains: search } },
-                { destination: { contains: search } },
+                { driver: { contains: search } },
+                { payoutId: { contains: search } },
+                { bank: { contains: search } },
+                { amount: { contains: search } },
                 { status: { contains: search } },
-                { priority: { contains: search } },
             ]
         }
 
         const [total, items] = await Promise.all([
-            prisma.order.count({ where }),
-            prisma.order.findMany({
+            prisma.payout.count({ where }),
+            prisma.payout.findMany({
                 where,
                 skip: (page - 1) * pageSize,
                 take: pageSize,
-                orderBy: {
-                    [sortColumn === "id" ? "orderId" : sortColumn]: sortDirection,
-                },
+                orderBy: { createdAt: "desc" },
             }),
         ])
 
-        // Map database orderId back to id for the frontend
         const mappedItems = items.map((item) => ({
             ...item,
-            id: item.orderId,
+            id: item.payoutId,
         }))
 
         return NextResponse.json({
@@ -47,7 +42,7 @@ export async function GET(req: NextRequest) {
             totalPages: Math.ceil(total / pageSize),
         })
     } catch (error) {
-        console.error("Failed to fetch orders:", error)
+        console.error("Failed to fetch payouts:", error)
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
     }
 }
