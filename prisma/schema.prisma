@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  orderId     String   @unique
+  customer    String
+  destination String
+  status      String
+  priority    String
+  serviceType String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Driver {
+  id          String   @id @default(cuid())
+  driverId    String   @unique
+  name        String
+  status      String
+  rating      Float
+  deliveries  Int
+  experience  String
+  contact     String
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Vehicle {
+  id              String   @id @default(cuid())
+  vehicleId       String   @unique
+  type            String
+  model           String
+  capacity        String
+  fuelLevel       String
+  lastMaintenance String
+  status          String
+  vin             String
+  year            Int
+  mileage         String
+  engineStatus    String
+  tirePressure    String
+  currentDriver   String?
+  currentLocation String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FleetItem {
+  id        String   @id @default(cuid())
+  vehicleId String   @unique
+  status    String
+  location  String
+  driver    String
+  load      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PricingRule {
+  id         String   @id @default(cuid())
+  name       String
+  type       String
+  value      String
+  region     String
+  status     String
+  lastUpdated String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Payout {
+  id          String   @id @default(cuid())
+  payoutId    String   @unique
+  driver      String
+  amount      String
+  status      String
+  requestDate String
+  bank        String
+  accountEnd  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Stat {
+  id        String   @id @default(cuid())
+  label     String
+  value     String
+  change    String
+  trend     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MonthlyPerformance {
+  id         String   @id @default(cuid())
+  month      String   @unique
+  revenue    Int
+  deliveries Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model StatusDistribution {
+  id     String @id @default(cuid())
+  status String @unique
+  count  Int
+}

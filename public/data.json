@@ -1,0 +1,358 @@
+{
+    "stats": [
+        {
+            "label": "Total Active Vehicles",
+            "value": "1,284",
+            "change": "+12.5%",
+            "trend": "up"
+        },
+        {
+            "label": "On-Time Delivery Rate",
+            "value": "94.2%",
+            "change": "+2.1%",
+            "trend": "up"
+        },
+        {
+            "label": "Fuel Consumption",
+            "value": "42.8k L",
+            "change": "-5.4%",
+            "trend": "down"
+        },
+        {
+            "label": "Maintenance Alerts",
+            "value": "18",
+            "change": "+3",
+            "trend": "neutral"
+        }
+    ],
+    "live_fleet": [
+        {
+            "id": "V-1024",
+            "status": "Moving",
+            "location": "Dubai Marina",
+            "driver": "Ahmed K.",
+            "load": "Electronics"
+        },
+        {
+            "id": "V-0982",
+            "status": "Idle",
+            "location": "Jebel Ali Port",
+            "driver": "John D.",
+            "load": "Empty"
+        },
+        {
+            "id": "V-1105",
+            "status": "Loading",
+            "location": "Al Quoz",
+            "driver": "Sanjay P.",
+            "load": "Textiles"
+        },
+        {
+            "id": "V-0876",
+            "status": "Moving",
+            "location": "Sharjah City",
+            "driver": "Rashid M.",
+            "load": "Machinery"
+        },
+        {
+            "id": "V-1201",
+            "status": "Moving",
+            "location": "Abu Dhabi Centre",
+            "driver": "Liam N.",
+            "load": "Food Supply"
+        },
+        {
+            "id": "V-1202",
+            "status": "Maintenance",
+            "location": "Service Hub A",
+            "driver": "Unknown",
+            "load": "None"
+        },
+        {
+            "id": "V-1203",
+            "status": "Moving",
+            "location": "Al Ain",
+            "driver": "Omar S.",
+            "load": "Construction Materials"
+        },
+        {
+            "id": "V-1204",
+            "status": "Idle",
+            "location": "Fujairah Port",
+            "driver": "Chen W.",
+            "load": "Empty"
+        },
+        {
+            "id": "V-1205",
+            "status": "Loading",
+            "location": "Dubai South",
+            "driver": "Vikram R.",
+            "load": "Pharma"
+        },
+        {
+            "id": "V-1206",
+            "status": "Moving",
+            "location": "Ras Al Khaimah",
+            "driver": "Hassan T.",
+            "load": "Beverages"
+        }
+    ],
+    "orders": [
+        {
+            "id": "ORD-55214",
+            "customer": "Global Traders",
+            "destination": "Abu Dhabi",
+            "status": "In Transit",
+            "priority": "High"
+        },
+        {
+            "id": "ORD-55215",
+            "customer": "LogiCorp",
+            "destination": "Riyadh",
+            "status": "Pending",
+            "priority": "Medium"
+        },
+        {
+            "id": "ORD-55216",
+            "customer": "Express Delivery",
+            "destination": "Doha",
+            "status": "Delivered",
+            "priority": "Low"
+        },
+        {
+            "id": "ORD-55217",
+            "customer": "Fine Goods Ltd",
+            "destination": "Muscat",
+            "status": "Pickup",
+            "priority": "High"
+        },
+        {
+            "id": "ORD-55218",
+            "customer": "Tech Solutions",
+            "destination": "Kuwait City",
+            "status": "Processing",
+            "priority": "Medium"
+        },
+        {
+            "id": "ORD-55219",
+            "customer": "Oceanic Import",
+            "destination": "Manama",
+            "status": "In Transit",
+            "priority": "Low"
+        },
+        {
+            "id": "ORD-55220",
+            "customer": "Desert Rose Co",
+            "destination": "Amman",
+            "status": "Pending",
+            "priority": "High"
+        },
+        {
+            "id": "ORD-55221",
+            "customer": "Valley Logistics",
+            "destination": "Cairo",
+            "status": "Delivered",
+            "priority": "Medium"
+        },
+        {
+            "id": "ORD-55222",
+            "customer": "Skyline Trading",
+            "destination": "Beirut",
+            "status": "In Transit",
+            "priority": "High"
+        },
+        {
+            "id": "ORD-55223",
+            "customer": "Nordic Group",
+            "destination": "Jeddah",
+            "status": "Pickup",
+            "priority": "Medium"
+        }
+    ],
+    "drivers": [
+        {
+            "id": "DRV-001",
+            "name": "Ahmed Khan",
+            "status": "Active",
+            "rating": 4.8,
+            "deliveries": 1240,
+            "experience": "5 years",
+            "contact": "+971 50 123 4567",
+            "avatar": "https://avatar.vercel.sh/ahmed"
+        },
+        {
+            "id": "DRV-002",
+            "name": "John Doe",
+            "status": "On Leave",
+            "rating": 4.5,
+            "deliveries": 850,
+            "experience": "3 years",
+            "contact": "+971 50 234 5678",
+            "avatar": "https://avatar.vercel.sh/john"
+        },
+        {
+            "id": "DRV-003",
+            "name": "Sanjay Patel",
+            "status": "Active",
+            "rating": 4.9,
+            "deliveries": 2100,
+            "experience": "8 years",
+            "contact": "+971 50 345 6789",
+            "avatar": "https://avatar.vercel.sh/sanjay"
+        },
+        {
+            "id": "DRV-004",
+            "name": "Rashid Mohammed",
+            "status": "Active",
+            "rating": 4.7,
+            "deliveries": 920,
+            "experience": "4 years",
+            "contact": "+971 50 456 7890",
+            "avatar": "https://avatar.vercel.sh/rashid"
+        },
+        {
+            "id": "DRV-005",
+            "name": "Liam Nelson",
+            "status": "Suspended",
+            "rating": 3.2,
+            "deliveries": 150,
+            "experience": "1 year",
+            "contact": "+971 50 567 8901",
+            "avatar": "https://avatar.vercel.sh/liam"
+        }
+    ],
+    "vehicles": [
+        {
+            "id": "V-1024",
+            "type": "Heavy Truck",
+            "model": "Volvo FH16",
+            "capacity": "20 Tons",
+            "fuelLevel": "75%",
+            "lastMaintenance": "2025-01-15",
+            "status": "Active",
+            "vin": "VOLV1234567890FH",
+            "year": 2023,
+            "mileage": "45,000 km",
+            "engineStatus": "Excellent",
+            "tirePressure": "95 psi",
+            "currentDriver": "Ahmed Khan",
+            "currentLocation": "Dubai Marina"
+        },
+        {
+            "id": "V-0982",
+            "type": "Medium Truck",
+            "model": "Scania R450",
+            "capacity": "10 Tons",
+            "fuelLevel": "30%",
+            "lastMaintenance": "2024-12-10",
+            "status": "Active",
+            "vin": "SCAN9876543210R4",
+            "year": 2022,
+            "mileage": "82,000 km",
+            "engineStatus": "Good",
+            "tirePressure": "90 psi",
+            "currentDriver": "John Doe",
+            "currentLocation": "Jebel Ali Port"
+        },
+        {
+            "id": "V-1105",
+            "type": "Heavy Truck",
+            "model": "Mercedes Actros",
+            "capacity": "25 Tons",
+            "fuelLevel": "90%",
+            "lastMaintenance": "2025-02-01",
+            "status": "Maintenance",
+            "vin": "MERC1122334455AC",
+            "year": 2024,
+            "mileage": "12,000 km",
+            "engineStatus": "Service Required",
+            "tirePressure": "88 psi",
+            "currentDriver": "N/A",
+            "currentLocation": "Service Hub A"
+        },
+        {
+            "id": "V-0876",
+            "type": "Van",
+            "model": "Ford Transit",
+            "capacity": "2 Tons",
+            "fuelLevel": "45%",
+            "lastMaintenance": "2025-01-20",
+            "status": "Active",
+            "vin": "FORD5566778899TR",
+            "year": 2021,
+            "mileage": "35,000 km",
+            "engineStatus": "Excellent",
+            "tirePressure": "45 psi",
+            "currentDriver": "Rashid Mohammed",
+            "currentLocation": "Sharjah City"
+        },
+        {
+            "id": "V-1201",
+            "type": "Trailer",
+            "model": "Kenworth T680",
+            "capacity": "30 Tons",
+            "fuelLevel": "80%",
+            "lastMaintenance": "2025-01-05",
+            "status": "Active",
+            "vin": "KENW0011223344T6",
+            "year": 2023,
+            "mileage": "55,000 km",
+            "engineStatus": "Excellent",
+            "tirePressure": "100 psi",
+            "currentDriver": "Liam Nelson",
+            "currentLocation": "Abu Dhabi Centre"
+        }
+    ],
+    "analytics": {
+        "monthlyPerformance": [
+            {
+                "month": "Jan",
+                "revenue": 45000,
+                "deliveries": 210
+            },
+            {
+                "month": "Feb",
+                "revenue": 52000,
+                "deliveries": 245
+            },
+            {
+                "month": "Mar",
+                "revenue": 48000,
+                "deliveries": 220
+            },
+            {
+                "month": "Apr",
+                "revenue": 61000,
+                "deliveries": 310
+            },
+            {
+                "month": "May",
+                "revenue": 59000,
+                "deliveries": 290
+            },
+            {
+                "month": "Jun",
+                "revenue": 68000,
+                "deliveries": 340
+            }
+        ],
+        "statusDistribution": [
+            {
+                "status": "In Transit",
+                "count": 45
+            },
+            {
+                "status": "Delivered",
+                "count": 120
+            },
+            {
+                "status": "Pending",
+                "count": 15
+            },
+            {
+                "status": "Processing",
+                "count": 22
+            }
+        ]
+    }
+}
