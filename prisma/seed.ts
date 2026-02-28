@@ -68,11 +68,16 @@ async function main() {
     for (const fleet of data.live_fleet) {
         await prisma.fleetItem.upsert({
             where: { vehicleId: fleet.id },
-            update: {},
+            update: {
+                latitude: fleet.latitude ?? 0,
+                longitude: fleet.longitude ?? 0,
+            },
             create: {
                 vehicleId: fleet.id,
                 status: fleet.status,
                 location: fleet.location,
+                latitude: fleet.latitude ?? 0,
+                longitude: fleet.longitude ?? 0,
                 driver: fleet.driver,
                 load: fleet.load,
             },

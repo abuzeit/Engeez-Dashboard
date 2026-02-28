@@ -30,6 +30,8 @@
             "id": "V-1024",
             "status": "Moving",
             "location": "Dubai Marina",
+            "latitude": 25.0805,
+            "longitude": 55.1403,
             "driver": "Ahmed K.",
             "load": "Electronics"
         },
@@ -37,6 +39,8 @@
             "id": "V-0982",
             "status": "Idle",
             "location": "Jebel Ali Port",
+            "latitude": 25.0044,
+            "longitude": 55.0644,
             "driver": "John D.",
             "load": "Empty"
         },
@@ -44,6 +48,8 @@
             "id": "V-1105",
             "status": "Loading",
             "location": "Al Quoz",
+            "latitude": 25.1536,
+            "longitude": 55.2364,
             "driver": "Sanjay P.",
             "load": "Textiles"
         },
@@ -51,6 +57,8 @@
             "id": "V-0876",
             "status": "Moving",
             "location": "Sharjah City",
+            "latitude": 25.3462,
+            "longitude": 55.4211,
             "driver": "Rashid M.",
             "load": "Machinery"
         },
@@ -58,6 +66,8 @@
             "id": "V-1201",
             "status": "Moving",
             "location": "Abu Dhabi Centre",
+            "latitude": 24.4539,
+            "longitude": 54.3773,
             "driver": "Liam N.",
             "load": "Food Supply"
         },
@@ -65,6 +75,8 @@
             "id": "V-1202",
             "status": "Maintenance",
             "location": "Service Hub A",
+            "latitude": 25.2048,
+            "longitude": 55.2708,
             "driver": "Unknown",
             "load": "None"
         },
@@ -72,6 +84,8 @@
             "id": "V-1203",
             "status": "Moving",
             "location": "Al Ain",
+            "latitude": 24.2075,
+            "longitude": 55.7447,
             "driver": "Omar S.",
             "load": "Construction Materials"
         },
@@ -79,6 +93,8 @@
             "id": "V-1204",
             "status": "Idle",
             "location": "Fujairah Port",
+            "latitude": 25.1288,
+            "longitude": 56.3264,
             "driver": "Chen W.",
             "load": "Empty"
         },
@@ -86,6 +102,8 @@
             "id": "V-1205",
             "status": "Loading",
             "location": "Dubai South",
+            "latitude": 24.8965,
+            "longitude": 55.1714,
             "driver": "Vikram R.",
             "load": "Pharma"
         },
@@ -93,6 +111,8 @@
             "id": "V-1206",
             "status": "Moving",
             "location": "Ras Al Khaimah",
+            "latitude": 25.7895,
+            "longitude": 55.9432,
             "driver": "Hassan T.",
             "load": "Beverages"
         }

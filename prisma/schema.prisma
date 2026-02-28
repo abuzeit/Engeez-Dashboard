@@ -58,6 +58,8 @@ model FleetItem {
   vehicleId String   @unique
   status    String
   location  String
+  latitude  Float    @default(0)
+  longitude Float    @default(0)
   driver    String
   load      String
   createdAt DateTime @default(now())

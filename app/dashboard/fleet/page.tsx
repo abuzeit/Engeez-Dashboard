@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/sidebar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown, Minus, MoreHorizontal, Eye } from "lucide-react"
+import { TrendingUp, TrendingDown, Minus, MoreHorizontal, Eye, Map, Table } from "lucide-react"
 import Link from "next/link"
 import { DataTable } from "@/components/data-table"
+import { FleetMapView } from "@/components/fleet-map-view"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ColumnDef } from "@tanstack/react-table"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -40,13 +41,17 @@ type FleetVehicle = {
     id: string
     status: string
     location: string
+    latitude: number
+    longitude: number
     driver: string
     load: string
 }
 
 export default function FleetDashboard() {
     const [stats, setStats] = React.useState<any[]>([])
+    const [viewMode, setViewModeState] = React.useState<"table" | "map">("table")
     const [data, setData] = React.useState<FleetVehicle[]>([])
+    const [allData, setAllData] = React.useState<FleetVehicle[]>([]) // Used for the map
     const [loading, setLoading] = React.useState(true)
     const [totalPages, setTotalPages] = React.useState(0)
     const [params, setParams] = React.useState({
@@ -74,15 +79,34 @@ export default function FleetDashboard() {
         setLoading(false)
     }, [params.page, params.pageSize, params.sort, params.direction, params.search])
 
-    React.useEffect(() => {
-        fetchData()
-    }, [fetchData])
+    const fetchAllData = React.useCallback(async () => {
+        try {
+            const res = await fetch(`/api/fleet/all`)
+            const json = await res.json()
+            setAllData(json.data || [])
+        } catch (error) {
+            console.error("Failed to fetch all fleet data:", error)
+        }
+    }, [])
 
     React.useEffect(() => {
+        fetchData()
+        fetchAllData()
+    }, [fetchData, fetchAllData])
+
+    React.useEffect(() => {
+        const savedView = localStorage.getItem("ensi_fleet_view") as "table" | "map"
+        if (savedView) setViewModeState(savedView)
+
         fetch("/data.json")
             .then((res) => res.json())
             .then((json) => setStats(json.stats))
     }, [])
+
+    const setViewMode = (mode: "table" | "map") => {
+        setViewModeState(mode)
+        localStorage.setItem("ensi_fleet_view", mode)
+    }
 
     const columns: ColumnDef<FleetVehicle>[] = [
         {
@@ -125,19 +149,46 @@ export default function FleetDashboard() {
             header: "Status",
             cell: ({ row }) => {
                 const status = row.getValue("status") as string
+
+                const getStatusColor = (status: string) => {
+                    switch (status) {
+                        case "Moving": return "#10b981" // Emerald
+                        case "Idle": return "#eab308" // Yellow
+                        case "Loading": return "#3b82f6" // Blue
+                        case "Maintenance": return "#ef4444" // Red
+                        default: return "#6b7280" // Gray
+                    }
+                }
+
                 return (
-                    <Badge
-                        variant={status === "Moving" ? "default" : status === "Idle" ? "secondary" : "outline"}
-                        className={status === "Moving" ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-500/20" : ""}
+                    <span
+                        className="text-xs px-2 py-0.5 rounded-full text-white shadow-sm"
+                        style={{ backgroundColor: getStatusColor(status) }}
                     >
                         {status}
-                    </Badge>
+                    </span>
                 )
             },
         },
         {
             accessorKey: "location",
             header: "Location",
+        },
+        {
+            accessorKey: "latitude",
+            header: "Latitude",
+            cell: ({ row }) => {
+                const val = row.getValue("latitude") as number | undefined
+                return <span className="font-mono text-xs">{val != null ? val.toFixed(4) : "—"}</span>
+            },
+        },
+        {
+            accessorKey: "longitude",
+            header: "Longitude",
+            cell: ({ row }) => {
+                const val = row.getValue("longitude") as number | undefined
+                return <span className="font-mono text-xs">{val != null ? val.toFixed(4) : "—"}</span>
+            },
         },
         {
             id: "actions",
@@ -212,23 +263,47 @@ export default function FleetDashboard() {
                         ))}
                     </div>
 
-                    <Card className="shadow-sm border-muted-foreground/10">
-                        <CardHeader className="bg-muted/50 pb-4">
-                            <CardTitle className="text-base">Live Fleet Status</CardTitle>
-                            <CardDescription>Real-time location and status of active vehicles (Server-side Pagination)</CardDescription>
+                    <Card className="shadow-sm border-muted-foreground/10 flex-col flex h-full min-h-[700px]">
+                        <CardHeader className="bg-muted/50 pb-4 flex flex-row items-start justify-between">
+                            <div>
+                                <CardTitle className="text-base">Live Fleet Status</CardTitle>
+                                <CardDescription>Real-time location and status of active vehicles</CardDescription>
+                            </div>
+                            <div className="flex border rounded-md overflow-hidden bg-background">
+                                <Button
+                                    variant={viewMode === "table" ? "secondary" : "ghost"}
+                                    size="sm"
+                                    className="rounded-none px-3"
+                                    onClick={() => setViewMode("table")}
+                                >
+                                    <Table className="h-4 w-4 mr-2" /> Table
+                                </Button>
+                                <Button
+                                    variant={viewMode === "map" ? "secondary" : "ghost"}
+                                    size="sm"
+                                    className="rounded-none px-3"
+                                    onClick={() => setViewMode("map")}
+                                >
+                                    <Map className="h-4 w-4 mr-2" /> Map
+                                </Button>
+                            </div>
                         </CardHeader>
-                        <CardContent className="pt-0">
-                            <DataTable
-                                columns={columns}
-                                data={data}
-                                pageCount={totalPages}
-                                pageIndex={params.page - 1}
-                                pageSize={params.pageSize}
-                                loading={loading}
-                                onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
-                                onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
-                                onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
-                            />
+                        <CardContent className="pt-0 flex-1 relative mt-4">
+                            {viewMode === "table" ? (
+                                <DataTable
+                                    columns={columns}
+                                    data={data}
+                                    pageCount={totalPages}
+                                    pageIndex={params.page - 1}
+                                    pageSize={params.pageSize}
+                                    loading={loading}
+                                    onPaginationChange={(page, pageSize) => setParams(p => ({ ...p, page, pageSize }))}
+                                    onSortingChange={(sort, direction) => setParams(p => ({ ...p, sort, direction }))}
+                                    onSearchChange={(search) => setParams(p => ({ ...p, search, page: 1 }))}
+                                />
+                            ) : (
+                                <FleetMapView data={allData} />
+                            )}
                         </CardContent>
                     </Card>
                 </main>
