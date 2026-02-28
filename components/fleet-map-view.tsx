@@ -59,20 +59,20 @@ export function FleetMapView({ data }: FleetMapViewProps) {
         return hasValidCoords ? bounds : null
     }, [data])
 
-    // Initialize Map
+    // Initialize Map once on mount
     React.useEffect(() => {
         if (!mapContainer.current) return
 
-        const styleUrl = theme === "dark"
+        const initialStyle = theme === "dark"
             ? "https://tiles.openfreemap.org/styles/liberty"
             : "https://tiles.openfreemap.org/styles/bright"
 
         map.current = new maplibregl.Map({
             container: mapContainer.current,
-            style: styleUrl,
+            style: initialStyle,
             center: [55.3, 25.2], // Default UAE center roughly
             zoom: 7,
-            attributionControl: false, // We'll add our own if needed or rely on default OpenFreeMap text
+            attributionControl: false,
         })
 
         // Add standard controls
@@ -90,9 +90,21 @@ export function FleetMapView({ data }: FleetMapViewProps) {
             if (map.current) {
                 map.current.remove()
                 map.current = null
+                setMapLoaded(false)
             }
         }
-    }, [theme]) // Re-init on theme change to swap base layer style easily
+    }, []) // Run once on mount
+
+    // Update style when theme changes without re-initializing the whole map
+    React.useEffect(() => {
+        if (!map.current) return
+
+        const styleUrl = theme === "dark"
+            ? "https://tiles.openfreemap.org/styles/liberty"
+            : "https://tiles.openfreemap.org/styles/bright"
+
+        map.current.setStyle(styleUrl)
+    }, [theme])
 
     // Helper: get color by status
     const getStatusColor = (status: string) => {
